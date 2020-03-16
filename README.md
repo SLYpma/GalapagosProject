@@ -6,6 +6,7 @@ Analyses of NEMO 1/12 degree run and particle runs within this model using parce
 
 ## Basic dependency
 Python 3
+Parcels
 
 ## Project organization
 
