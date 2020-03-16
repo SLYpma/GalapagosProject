@@ -1,4 +1,4 @@
-# dummy_project
+# Galapagos project - NEMO model data
 
 Version 0.1.0
 
