@@ -18,6 +18,6 @@
 
 echo 'Executing program ...'
 
-python /scratch/SLYpma/GalapagosNEMO/scripts/particleruns/galapagos_forward.py
+python /scratch/SLYpma/GalapagosNEMO/scripts/particleruns/galapagosrun_forward.py
 
 echo 'Finished computation.'
