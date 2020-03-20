@@ -12,9 +12,9 @@
 # Set memory limit
 #$ -l h_vmem=20G
 # Set runtime limit
-#$ -l h_rt=24:00:00
+#$ -l h_rt=20:00:00
 # run the job on the queue for long-running processes:
-#$ -q long.q
+#$ -q all.q
 
 echo 'Executing program ...'
 
