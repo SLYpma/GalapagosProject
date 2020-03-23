@@ -11,7 +11,7 @@ Parcels
 ## Project organization
 
 ```
-.
+
 ├── .gitignore
 ├── CITATION.md
 ├── LICENSE.md
