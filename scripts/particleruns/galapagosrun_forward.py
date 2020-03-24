@@ -7,7 +7,7 @@ import os
 import warnings
 warnings.simplefilter('ignore', category=xr.SerializationWarning)
 
-ddir = "/data/oceanparcels/input_data/NEMO-MEDUSA/ORCA0083-N006/"
+ddir = "/projects/0/topios/hydrodynamic_data/NEMO-MEDUSA/ORCA0083-N006/"
 #odir = "scratch/SLYpma/GalapagosNEMO/results/output_data"
 #fname = os.path.join(odir,"galapagosparticles_testrun.nc")
 fname = "galapagosparticles_testrun.nc"
