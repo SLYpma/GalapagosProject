@@ -31,8 +31,8 @@ def ReadTrajectories(namefile):
     pfile = xr.open_dataset(namefile, decode_cf=True)
     Traj['lon'] = np.ma.filled(pfile.variables['lon'], np.nan)
     Traj['lat'] = np.ma.filled(pfile.variables['lat'], np.nan)
-    Traj['age'] = np.ma.filled(pfile.variables['age'], np.nan)
-    Traj['time'] = np.ma.filled(pfile.variables['time'], np.nan)
-    Traj['visitedgalapagos'] = np.ma.filled(pfile.variables['visitedgalapagos'], np.nan) 
+    #Traj['age'] = np.ma.filled(pfile.variables['age'], np.nan)
+    #Traj['time'] = np.ma.filled(pfile.variables['time'], np.nan)
+    #Traj['visitedgalapagos'] = np.ma.filled(pfile.variables['visitedgalapagos'], np.nan) 
     
     return Traj
