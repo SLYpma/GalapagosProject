@@ -95,14 +95,23 @@ def PlotSSTquiver(lon,lat,Tvel,Uvel,Vvel,
     cbar = plt.colorbar(fig, ax=ax)
     cbar.ax.set_ylabel('SST (\xb0C)')
 
-    ax.quiver(lon[0::dq,0::dq],lat[0::dq,0::dq],
-              Uvel[0::dq,0::dq],Vvel[0::dq,0::dq],
-              headwidth=headwidth,
-              headlength=headlength,
-              scale_units='xy',
-              angles='xy',
-              scale=scale)    
+    if lat.ndim == 1:
+        ax.quiver(lon[0::dq],lat[0::dq],
+                  Uvel[0::dq,0::dq],Vvel[0::dq,0::dq],
+                  headwidth=headwidth,
+                  headlength=headlength,
+                  scale_units='xy',
+                  angles='xy',
+                  scale=scale)
     
+    elif lat.ndim == 2:
+        ax.quiver(lon[0::dq,0::dq],lat[0::dq,0::dq],
+                  Uvel[0::dq,0::dq],Vvel[0::dq,0::dq],
+                  headwidth=headwidth,
+                  headlength=headlength,
+                  scale_units='xy',
+                  angles='xy',
+                  scale=scale)    
     
 def PlotBathyquiver(lon,lat,bathy,Uvel,Vvel,
                     figsize=(10, 8),
@@ -133,13 +142,23 @@ def PlotBathyquiver(lon,lat,bathy,Uvel,Vvel,
     cbar = plt.colorbar(fig, ax=ax)
     cbar.ax.set_ylabel('depth (m)')
 
-    ax.quiver(lon[0::dq,0::dq],lat[0::dq,0::dq],
-              Uvel[0::dq,0::dq],Vvel[0::dq,0::dq],
-              headwidth=headwidth,
-              headlength=headlength,
-              scale_units='xy',
-              angles='xy',
-              scale=scale)     
+    if lat.ndim == 1:
+        ax.quiver(lon[0::dq],lat[0::dq],
+                  Uvel[0::dq,0::dq],Vvel[0::dq,0::dq],
+                  headwidth=headwidth,
+                  headlength=headlength,
+                  scale_units='xy',
+                  angles='xy',
+                  scale=scale)
+    
+    elif lat.ndim == 2:
+        ax.quiver(lon[0::dq,0::dq],lat[0::dq,0::dq],
+                  Uvel[0::dq,0::dq],Vvel[0::dq,0::dq],
+                  headwidth=headwidth,
+                  headlength=headlength,
+                  scale_units='xy',
+                  angles='xy',
+                  scale=scale)     
     
 ############## READING ##############    
         
