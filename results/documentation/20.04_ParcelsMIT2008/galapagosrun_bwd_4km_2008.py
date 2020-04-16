@@ -29,7 +29,7 @@ if wstokes:
     fieldset_stokes = FieldSet.from_netcdf(stokesfiles, stokesvariables, 
                                            stokesdimensions) 
 #                                           time_periodic=delta(days=366))
-#    fieldset_stokes.add_periodic_halo(zonal=True, meridional=False, halosize=5)
+    fieldset_stokes.add_periodic_halo(zonal=True, meridional=False, halosize=5)
 
     fieldset = FieldSet(U=fieldset_MITgcm.U+fieldset_stokes.U, 
                         V=fieldset_MITgcm.V+fieldset_stokes.V)
@@ -67,24 +67,24 @@ pset = ParticleSet(fieldset=fieldset,
                    pclass=GalapagosParticle,
                    lon=startlon,
                    lat=startlat,
-                   time=fU.grid.time[-1])
-#                   repeatdt=delta(days=5))
+                   time=fU.grid.time[-1],
+                   repeatdt=delta(days=1))
 
 outfile = pset.ParticleFile(name=fname, outputdt=delta(days=1))
 
 pset.execute(AdvectionRK4+pset.Kernel(Age),
-             runtime=delta(days=10),
+             runtime=delta(days=30),
              dt=delta(hours=-1),
              output_file=outfile,
              recovery={ErrorCode.ErrorOutOfBounds: DeleteParticle})
 
-#pset.repeatdt = None
+pset.repeatdt = None
 
-#pset.execute(AdvectionRK4+pset.Kernel(Age),
-#             runtime=delta(days=300),
-#             dt=delta(hours=-1),
-#             output_file=outfile,
-#             recovery={ErrorCode.ErrorOutOfBounds: DeleteParticle})
+pset.execute(AdvectionRK4+pset.Kernel(Age),
+             runtime=delta(days=270),
+             dt=delta(hours=-1),
+             output_file=outfile,
+             recovery={ErrorCode.ErrorOutOfBounds: DeleteParticle})
 
 outfile.export()
 outfile.close()
