@@ -1,0 +1,27 @@
+Executing program ...
+WARNING: Casting depth data to np.float32
+WARNING: Trying to initialize a shared grid with different chunking sizes - action prohibited. Replacing requested field_chunksize with grid's master chunksize.
+INFO: Compiled GalapagosParticleAdvectionRK4Age ==> /scratch-local/sypmauu.8029142/parcels-51179/12f25a11f396b57f06c99151bc544bd6_0.so
+Traceback (most recent call last):
+  File "galapagosrun_bwd_4km_2008_v2.py", line 89, in <module>
+    output_file=outfile)
+  File "/home/sypmauu/parcels/parcels/particleset.py", line 622, in execute
+    next_input = self.fieldset.computeTimeChunk(time, np.sign(dt))
+  File "/home/sypmauu/parcels/parcels/fieldset.py", line 896, in computeTimeChunk
+    data = f.computeTimeChunk(data, tind)
+  File "/home/sypmauu/parcels/parcels/field.py", line 1223, in computeTimeChunk
+    buffer_data = filebuffer.data
+  File "/home/sypmauu/parcels/parcels/field.py", line 2017, in data
+    return self.data_access()
+  File "/home/sypmauu/parcels/parcels/field.py", line 2107, in data_access
+    data = data.rechunk(self.chunk_mapping)
+  File "/home/sypmauu/.conda/envs/py3_parcels/lib/python3.7/site-packages/dask/array/core.py", line 2197, in rechunk
+    return rechunk(self, chunks, threshold, block_size_limit)
+  File "/home/sypmauu/.conda/envs/py3_parcels/lib/python3.7/site-packages/dask/array/rechunk.py", line 223, in rechunk
+    chunks = {validate_axis(c, x.ndim): v for c, v in chunks.items()}
+  File "/home/sypmauu/.conda/envs/py3_parcels/lib/python3.7/site-packages/dask/array/rechunk.py", line 223, in <dictcomp>
+    chunks = {validate_axis(c, x.ndim): v for c, v in chunks.items()}
+  File "/home/sypmauu/.conda/envs/py3_parcels/lib/python3.7/site-packages/dask/array/utils.py", line 345, in validate_axis
+    "Axis %d is out of bounds for array of dimension %d" % (axis, ndim)
+numpy.AxisError: Axis 2 is out of bounds for array of dimension 2
+Finished computation.
