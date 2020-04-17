@@ -4,26 +4,54 @@ from glob import glob
 import numpy as np
 import xarray as xr
 import os
+import math
 import warnings
+import dask
 warnings.simplefilter('ignore', category=xr.SerializationWarning)
 
-ddir = "/home/sypmauu/GalapagosNEMO/data/"
-fname = "galapagosparticles_bwd_4km_2008_v2.nc"
+ddir = "/home/sypmauu/GalapagosProject/data/MIT4km/"
+wstokes = False
 
 # set field
+#dask.config.set({'array.chunk-size': '16MiB'})
 varfiles = glob(ddir+'RGEMS3_2008_Surf.nc')
 meshfile = glob(ddir+'RGEMS3_Surf_grid.nc')
 MITgcm_files = {'U': {'lon': meshfile, 'lat': meshfile, 'data': varfiles},
                 'V': {'lon': meshfile, 'lat': meshfile, 'data': varfiles}}
 MITgcm_variables = {'U': 'UVEL', 'V': 'VVEL'}
-MITgcm_dimensions = {'lon': 'XG', 'lat': 'YG', 'time': 'time'}
-fieldset = FieldSet.from_c_grid_dataset(MITgcm_files, MITgcm_variables, 
-                                        MITgcm_dimensions,
-                                        time_periodic=delta(days=365), 
-                                        tracer_interp_method='cgrid_velocity')
+MITgcm_dimensions = {'lon': 'XG', 
+                     'lat': 'YG', 
+                     'time': 'time'}
+chunk_MITgcm = {'time': 6, 'XC': 40, 'YC': 40, 'XG': 40, 'YG': 40}
+fieldset_MITgcm = FieldSet.from_c_grid_dataset(MITgcm_files, MITgcm_variables, 
+                                               MITgcm_dimensions,
+                                               field_chunksize=chunk_MITgcm,
+                                               time_periodic=delta(days=366), 
+                                               tracer_interp_method='cgrid_velocity')
 
-fU=fieldset.U
-fieldset.computeTimeChunk(fU.grid.time[-1], -1)
+if wstokes:
+    stokesfiles = sorted(glob('/projects/0/topios/hydrodynamic_data/WaveWatch3data/CFSR/WW3-GLOB-30M_2008*_uss.nc'))
+    stokesdimensions = {'lat': 'latitude', 
+                        'lon': 'longitude', 
+                        'time': 'time'}
+    stokesvariables = {'U': 'uuss', 
+                       'V': 'vuss'}
+    chunk_stokes = {'time': 1, 'latitude': 50, 'longitude': 50}
+    fieldset_stokes = FieldSet.from_netcdf(stokesfiles, stokesvariables, 
+                                           stokesdimensions,
+                                           field_chunksize=chunk_stokes,
+                                           time_periodic=delta(days=366))
+    fieldset_stokes.add_periodic_halo(zonal=True, meridional=False, halosize=5)
+    fieldset = FieldSet(U=fieldset_MITgcm.U+fieldset_stokes.U, 
+                        V=fieldset_MITgcm.V+fieldset_stokes.V)
+    fU = fieldset.U[0]
+    fname = "/home/sypmauu/GalapagosProject/results/data_output/galapagosparticles_bwd_4km_2008_wstokes_v2.nc"
+else:
+    fieldset = fieldset_MITgcm
+    fU = fieldset.U
+    fname = "/home/sypmauu/GalapagosProject/results/data_output/galapagosparticles_bwd_4km_2008_v2.nc"
+
+#fieldset.computeTimeChunk(fU.grid.time[-1], -1)
 
 #initialize where to start particles
 galapagos_extent = [-91.8, -89, -1.4, 0.7]
@@ -50,24 +78,25 @@ pset = ParticleSet(fieldset=fieldset,
                    pclass=GalapagosParticle,
                    lon=startlon,
                    lat=startlat,
-                   time=fU.grid.time[-1],
-                   repeatdt=delta(days=5))
+                   time=fU.grid.time[-1])
+#                   repeatdt=delta(days=5))
 
 outfile = pset.ParticleFile(name=fname, outputdt=delta(days=1))
 
 pset.execute(AdvectionRK4+pset.Kernel(Age),
-             runtime=delta(days=365),
+             runtime=delta(days=30),
              dt=delta(hours=-1),
-             output_file=outfile,
+             output_file=outfile)
              recovery={ErrorCode.ErrorOutOfBounds: DeleteParticle})
 
-pset.repeatdt = None
+#pset.repeatdt = None
 
-pset.execute(AdvectionRK4+pset.Kernel(Age),
-             runtime=delta(days=300),
-             dt=delta(hours=-1),
-             output_file=outfile,
-             recovery={ErrorCode.ErrorOutOfBounds: DeleteParticle})
+#pset.execute(AdvectionRK4+pset.Kernel(Age),
+#             runtime=delta(days=300),
+#             dt=delta(hours=-1),
+#             output_file=outfile,
+#             recovery={ErrorCode.ErrorOutOfBounds: DeleteParticle})
 
 outfile.export()
 outfile.close()
+
